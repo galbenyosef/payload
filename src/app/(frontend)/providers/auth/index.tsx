@@ -43,8 +43,9 @@ export const AuthProvider: React.FC<{ api?: 'gql' | 'rest'; children: React.Reac
 
   const login = useCallback<Login>(
     async (args) => {
+      console.log(args)
       if (api === 'rest') {
-        const user = await rest(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/login`, args)
+        const user = await rest(`/api/users/login`, args)
         setUser(user)
         return user
       }
@@ -87,7 +88,7 @@ export const AuthProvider: React.FC<{ api?: 'gql' | 'rest'; children: React.Reac
     const fetchMe = async () => {
       if (api === 'rest') {
         const user = await rest(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/me`,
+          `/api/users/me`,
           {},
           {
             method: 'GET',

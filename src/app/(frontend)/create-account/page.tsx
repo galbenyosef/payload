@@ -59,7 +59,7 @@ const Page = () => {
 
   const onSubmit: SubmitHandler<FormData> = useCallback(
     async (data: FormData) => {
-      const response = await fetch(`/api/users`, {
+      /*     const response = await fetch(`/api/users`, {
         body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ const Page = () => {
         setError(message)
         return
       }
-
+ */
       const redirect = searchParams.get('redirect')
 
       const timer = setTimeout(() => {
@@ -81,14 +81,17 @@ const Page = () => {
 
       try {
         await login(data)
+
         clearTimeout(timer)
         if (redirect) {
           router.push(redirect)
         } else {
-          router.push(`/account?success=${encodeURIComponent('Account created successfully')}`)
+          router.push(`/`)
         }
       } catch (_) {
         clearTimeout(timer)
+        setLoading(false)
+
         setError('There was an error with the credentials provided. Please try again.')
       }
     },
@@ -183,8 +186,12 @@ const Page = () => {
                 {errors.role?.type === 'validate' && <p role="alert">Error</p>}
               </div>
               <div className="col-md-12">
-                <button type="submit" className="cs_btn cs_style_1 cs_white_color">
-                  {data.buttonText}
+                <button
+                  disabled={loading}
+                  type="submit"
+                  className="cs_btn cs_style_1 cs_white_color"
+                >
+                  {loading ? 'Submitting...' : data.buttonText}
                 </button>
               </div>
             </form>

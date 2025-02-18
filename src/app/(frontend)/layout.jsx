@@ -4,6 +4,7 @@ import 'slick-carousel/slick/slick-theme.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './sass/style.scss'
 import DefalultLayout from './(home1)/layout'
+import { AuthProvider } from './providers/auth'
 
 const rubik = Rubik({
   subsets: ['latin'],
@@ -38,7 +39,13 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className={`${rubik.variable} ${poppins.variable}`}>
-        <DefalultLayout>{children}</DefalultLayout>
+        <AuthProvider
+          // To toggle between the REST and GraphQL APIs,
+          // change the `api` prop to either `rest` or `gql`
+          api="rest" // change this to `gql` to use the GraphQL API
+        >
+          <DefalultLayout>{children}</DefalultLayout>
+        </AuthProvider>
       </body>
     </html>
   )

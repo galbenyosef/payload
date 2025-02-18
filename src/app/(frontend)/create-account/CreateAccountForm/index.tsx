@@ -5,10 +5,10 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useCallback, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { Button } from '../../../Components/Button'
-import { Input } from '../../../Components/Input'
-import { Message } from '../../../Components/Message'
-import { useAuth } from '../../../providers/auth'
+import { Button } from '../../Components/Button'
+import { Input } from '../../Components/Input'
+import { Message } from '../../Components/Message'
+import { useAuth } from '../../providers/auth'
 import classes from './index.module.scss'
 
 type FormData = {

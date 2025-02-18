@@ -3,6 +3,8 @@ import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './sass/style.scss'
+import Header from './Components/Header/Header'
+import Footer from './Components/Footer/Footer'
 
 const rubik = Rubik({
   subsets: ['latin'],
@@ -36,7 +38,13 @@ export default function RootLayout({ children }) {
         <meta name="author" content="Themeservices" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body className={`${rubik.variable} ${poppins.variable}`}>{children}</body>
+      <body className={`${rubik.variable} ${poppins.variable}`}>
+        <div className="main-page-area">
+          <Header></Header>
+          {children}
+          <Footer></Footer>
+        </div>
+      </body>
     </html>
   )
 }

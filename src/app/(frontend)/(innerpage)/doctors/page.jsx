@@ -87,10 +87,16 @@ const appointmentSectionData = {
 }
 
 const page = async () => {
-  const res = await fetch('http://localhost:3000/api/media?limit=20')
+  const res = await fetch('http://localhost:3000/api/doctors')
   const json = await res.json()
 
-  console.log(json)
+  const data = {
+    ...appointmentSectionData,
+    doctorsData: appointmentSectionData.doctorsData.map((ddata, index) =>
+      Object.assign({}, ddata, json.docs[index]),
+    ),
+  }
+
   return (
     <div>
       <Section
@@ -101,7 +107,7 @@ const page = async () => {
       </Section>
 
       <Section topSpaceLg="70" topSpaceMd="110" bottomSpaceLg="80" bottomSpaceMd="120">
-        <AppointmentSection data={appointmentSectionData} />
+        <AppointmentSection data={data} />
       </Section>
     </div>
   )

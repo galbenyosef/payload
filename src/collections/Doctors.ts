@@ -1,27 +1,21 @@
-import {
-  CollectionConfig,
-  CollectionBeforeChangeHook,
-  CollectionBeforeReadHook,
-  CollectionAfterChangeHook,
-} from 'payload'
+import { isAdmin } from '@/access/roles'
+import { CollectionConfig, CollectionBeforeChangeHook, CollectionAfterReadHook } from 'payload'
 
 const BeforeChangeHook: CollectionBeforeChangeHook = async ({
-  originalDoc,
+  data,
   req, // incoming data to update or create with
 }) => {
   const specialty = await req.payload.findByID({
     collection: 'specialties',
-    id: originalDoc.specialtyId,
+    id: data.specialtyId,
   })
-  const image =
-    originalDoc.image &&
-    (await req.payload.findByID({ collection: 'media', id: originalDoc.image }))
+  const image = data.image && (await req.payload.findByID({ collection: 'media', id: data.image }))
 
   return {
-    ...originalDoc,
+    ...data,
     specialty: specialty.name,
     ...(image && { imageUrl: image.url }),
-    profileLink: `/${originalDoc.name}-${originalDoc.id}`,
+    profileLink: `/doctors/${data.slug}`,
   }
 }
 
@@ -32,7 +26,17 @@ export const Doctors: CollectionConfig = {
     read: () => true,
   },
   hooks: {
-    beforeChange: [BeforeChangeHook],
+    afterRead: [
+      ({ doc, req: { user } }) => {
+        doc.specialty = doc.specialtyId.name
+        doc.profileLink = `/doctors/${doc.slug}`
+
+        if (user?.role === 'admin') {
+          return doc
+        }
+        return { ...doc, specialtyId: undefined }
+      },
+    ],
   },
   admin: {
     useAsTitle: 'name',
@@ -42,6 +46,15 @@ export const Doctors: CollectionConfig = {
       name: 'name',
       type: 'text',
       required: true,
+    },
+    {
+      name: 'slug',
+      type: 'text',
+      required: true,
+      unique: true,
+      admin: {
+        description: 'URL-friendly identifier for the tenant',
+      },
     },
     {
       label: 'Specialty',

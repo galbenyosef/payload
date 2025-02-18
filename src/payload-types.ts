@@ -116,13 +116,41 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * Users of the platform
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
   id: number;
+  /**
+   * Full name of the user
+   */
+  name: string;
+  /**
+   * Maximum size: 4MB. Accepted formats: .jpg, .jpeg, .png, .gif
+   */
+  avatar?: (number | null) | Media;
+  /**
+   * User role determines permissions
+   */
+  role: 'admin' | 'doctor' | 'patient';
+  /**
+   * Last time user was active
+   */
+  lastActive?: string | null;
+  /**
+   * URL-friendly identifier for the tenant
+   */
+  testa?: string | null;
   updatedAt: string;
   createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
+  /**
+   * Email address used for login
+   */
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -168,6 +196,10 @@ export interface Specialty {
 export interface Doctor {
   id: number;
   name: string;
+  /**
+   * URL-friendly identifier for the tenant
+   */
+  slug: string;
   specialtyId: number | Specialty;
   specialty?: string | null;
   image?: (number | null) | Media;
@@ -249,8 +281,16 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  avatar?: T;
+  role?: T;
+  lastActive?: T;
+  testa?: T;
   updatedAt?: T;
   createdAt?: T;
+  enableAPIKey?: T;
+  apiKey?: T;
+  apiKeyIndex?: T;
   email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;
@@ -292,6 +332,7 @@ export interface SpecialtiesSelect<T extends boolean = true> {
  */
 export interface DoctorsSelect<T extends boolean = true> {
   name?: T;
+  slug?: T;
   specialtyId?: T;
   specialty?: T;
   image?: T;

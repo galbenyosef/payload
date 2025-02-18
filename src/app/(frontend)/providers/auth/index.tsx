@@ -1,6 +1,6 @@
 'use client'
 
-import type { Permissions } from 'payload/auth'
+import type { Permissions } from 'payload'
 
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
@@ -181,6 +181,6 @@ export const AuthProvider: React.FC<{ api?: 'gql' | 'rest'; children: React.Reac
   )
 }
 
-type UseAuth<T = User> = () => AuthContext  
+type UseAuth<T = User> = () => AuthContext
 
 export const useAuth: UseAuth = () => useContext(Context)

@@ -139,10 +139,6 @@ export interface User {
    * Last time user was active
    */
   lastActive?: string | null;
-  /**
-   * URL-friendly identifier for the tenant
-   */
-  testa?: string | null;
   updatedAt: string;
   createdAt: string;
   enableAPIKey?: boolean | null;
@@ -285,7 +281,6 @@ export interface UsersSelect<T extends boolean = true> {
   avatar?: T;
   role?: T;
   lastActive?: T;
-  testa?: T;
   updatedAt?: T;
   createdAt?: T;
   enableAPIKey?: T;

@@ -125,7 +125,7 @@ export const Users: CollectionConfig = {
         readOnly: true,
       },
     },
-    {
+    /*   {
       name: 'testa',
       type: 'text',
       required: true,
@@ -139,7 +139,7 @@ export const Users: CollectionConfig = {
         },
         description: 'URL-friendly identifier for the tenant',
       },
-    },
+    }, */
   ],
   hooks: {
     beforeValidate: [

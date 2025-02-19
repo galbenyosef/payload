@@ -10,7 +10,7 @@ const DefalultLayout = ({ children }) => {
   return (
     <div className="main-page-area">
       <Header isTopBar={true}></Header>
-      {true && <Loader />}
+      {loading && <Loader />}
       {children}
       <Footer></Footer>
     </div>

@@ -70,8 +70,15 @@ export const AuthProvider: React.FC<{ api?: 'gql' | 'rest'; children: React.Reac
 
   const logout = useCallback<Logout>(async () => {
     if (api === 'rest') {
-      await rest(`/api/users/logout`)
+      await rest(
+        `/api/users/logout`,
+        {},
+        {
+          method: 'POST',
+        },
+      )
       setUser(null)
+
       return
     }
 

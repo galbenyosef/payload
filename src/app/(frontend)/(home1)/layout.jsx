@@ -1,15 +1,20 @@
-import React from 'react';
-import Header from '../Components/Header/Header';
-import Footer from '../Components/Footer/Footer';
-
+'use client'
+import React from 'react'
+import Header from '../Components/Header/Header'
+import Footer from '../Components/Footer/Footer'
+import { useAuth } from '../providers/auth'
+import Loader from '../Components/Loader'
 const DefalultLayout = ({ children }) => {
-    return (
-        <div className='main-page-area'>
-            <Header isTopBar={true}></Header>
-            {children}
-            <Footer></Footer>
-        </div>
-    );
-};
+  const { loading } = useAuth()
 
-export default DefalultLayout;
+  return (
+    <div className="main-page-area">
+      <Header isTopBar={true}></Header>
+      {true && <Loader />}
+      {children}
+      <Footer></Footer>
+    </div>
+  )
+}
+
+export default DefalultLayout

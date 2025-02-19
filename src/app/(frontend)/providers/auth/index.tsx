@@ -18,6 +18,7 @@ export const AuthProvider: React.FC<{ api?: 'gql' | 'rest'; children: React.Reac
 }) => {
   const [user, setUser] = useState<null | User>()
   const [permissions, setPermissions] = useState<null | Permissions>(null)
+  const [loading, setLoading] = React.useState(false)
 
   const create = useCallback<Create>(
     async (args) => {
@@ -86,6 +87,7 @@ export const AuthProvider: React.FC<{ api?: 'gql' | 'rest'; children: React.Reac
   // On mount, get user and set
   useEffect(() => {
     const fetchMe = async () => {
+      setLoading(true)
       if (api === 'rest') {
         const user = await rest(
           `/api/users/me`,
@@ -109,6 +111,8 @@ export const AuthProvider: React.FC<{ api?: 'gql' | 'rest'; children: React.Reac
 
         setUser(meUser.user)
       }
+
+      setLoading(false)
     }
 
     void fetchMe()
@@ -175,6 +179,8 @@ export const AuthProvider: React.FC<{ api?: 'gql' | 'rest'; children: React.Reac
         setPermissions,
         setUser,
         user,
+        setLoading,
+        loading,
       }}
     >
       {children}

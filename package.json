@@ -20,6 +20,7 @@
     "@payloadcms/db-postgres": "latest",
     "@payloadcms/next": "latest",
     "@payloadcms/payload-cloud": "latest",
+    "@payloadcms/plugin-nested-docs": "^3.23.0",
     "@payloadcms/richtext-lexical": "latest",
     "@smastrom/react-rating": "^1.5.0",
     "bootstrap": "^5.3.3",

@@ -14,6 +14,7 @@ export const Specialties: CollectionConfig = {
       name: 'name',
       type: 'text',
       required: true,
+      unique: true,
     },
   ],
 }

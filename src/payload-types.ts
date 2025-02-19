@@ -68,7 +68,7 @@ export interface Config {
     users: User;
     media: Media;
     specialties: Specialty;
-    doctors: Doctor;
+    appointments: Appointment;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -78,7 +78,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     specialties: SpecialtiesSelect<false> | SpecialtiesSelect<true>;
-    doctors: DoctorsSelect<false> | DoctorsSelect<true>;
+    appointments: AppointmentsSelect<false> | AppointmentsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -134,7 +134,12 @@ export interface User {
   /**
    * User role determines permissions
    */
-  role: 'admin' | 'doctor' | 'patient';
+  roles?: ('admin' | 'expert' | 'client')[] | null;
+  /**
+   * URL-friendly identifier for the tenant
+   */
+  slug?: string | null;
+  specialty?: (number | null) | Specialty;
   /**
    * Last time user was active
    */
@@ -144,9 +149,6 @@ export interface User {
   enableAPIKey?: boolean | null;
   apiKey?: string | null;
   apiKeyIndex?: string | null;
-  /**
-   * Email address used for login
-   */
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -162,6 +164,7 @@ export interface User {
  */
 export interface Media {
   id: number;
+  title: string;
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -187,23 +190,12 @@ export interface Specialty {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "doctors".
+ * via the `definition` "appointments".
  */
-export interface Doctor {
+export interface Appointment {
   id: number;
-  name: string;
-  /**
-   * URL-friendly identifier for the tenant
-   */
-  slug: string;
-  specialtyId: number | Specialty;
-  specialty?: string | null;
-  image?: (number | null) | Media;
-  imageUrl?: string | null;
-  profileLink?: string | null;
-  iconUrl?: string | null;
-  iconUrl2?: string | null;
-  iconUrl3?: string | null;
+  expert: number | User;
+  client: number | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -227,8 +219,8 @@ export interface PayloadLockedDocument {
         value: number | Specialty;
       } | null)
     | ({
-        relationTo: 'doctors';
-        value: number | Doctor;
+        relationTo: 'appointments';
+        value: number | Appointment;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -279,7 +271,9 @@ export interface PayloadMigration {
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
   avatar?: T;
-  role?: T;
+  roles?: T;
+  slug?: T;
+  specialty?: T;
   lastActive?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -299,6 +293,7 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
+  title?: T;
   alt?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -323,19 +318,11 @@ export interface SpecialtiesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "doctors_select".
+ * via the `definition` "appointments_select".
  */
-export interface DoctorsSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  specialtyId?: T;
-  specialty?: T;
-  image?: T;
-  imageUrl?: T;
-  profileLink?: T;
-  iconUrl?: T;
-  iconUrl2?: T;
-  iconUrl3?: T;
+export interface AppointmentsSelect<T extends boolean = true> {
+  expert?: T;
+  client?: T;
   updatedAt?: T;
   createdAt?: T;
 }

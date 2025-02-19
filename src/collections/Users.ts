@@ -1,7 +1,8 @@
 import { loginAfterCreate } from './hooks/loginAfterCreate'
 import type { CollectionConfig, PayloadRequest } from 'payload'
 import type { User } from '../payload-types'
-import { anyone, isAdmin, isAdminOrSelf } from '../access/roles'
+import { anyone, checkRole, isAdmin, isAdminOrSelf } from '../access/roles'
+import { protectRoles } from './hooks/protectRoles'
 
 type EmailTemplateArgs = {
   req?: PayloadRequest
@@ -27,7 +28,7 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
     group: 'System',
-    defaultColumns: ['email', 'name', 'role'],
+    defaultColumns: ['name', 'email', 'roles', 'specialty'],
     description: 'Users of the platform',
     listSearchableFields: ['email', 'name'],
     pagination: {
@@ -48,9 +49,6 @@ export const Users: CollectionConfig = {
       type: 'email',
       required: true,
       unique: true,
-      admin: {
-        description: 'Email address used for login',
-      },
     },
     {
       name: 'resetPasswordToken',
@@ -105,18 +103,53 @@ export const Users: CollectionConfig = {
 
     // Role & Access Fields
     {
-      name: 'role',
+      name: 'roles',
       type: 'select',
-      required: true,
+      hasMany: true,
+      saveToJWT: true,
+      access: {
+        create: isAdmin,
+        update: isAdmin,
+      },
       options: [
-        { label: 'Admin', value: 'admin' },
-        { label: 'Doctor', value: 'doctor' },
-        { label: 'Patient', value: 'patient' },
+        {
+          label: 'Admin',
+          value: 'admin',
+        },
+        {
+          label: 'Expert',
+          value: 'expert',
+        },
+        {
+          label: 'Client',
+          value: 'client',
+        },
       ],
       admin: {
         description: 'User role determines permissions',
       },
     },
+
+    {
+      name: 'slug',
+      type: 'text',
+      required: true,
+      unique: true,
+      admin: {
+        description: 'URL-friendly identifier for the tenant',
+        condition: (data, siblingData, { user }) => checkRole(['expert'], user),
+      },
+    },
+    {
+      name: 'specialty',
+      type: 'relationship',
+      required: true,
+      relationTo: 'specialties',
+      admin: {
+        condition: (data, siblingData, { user }) => checkRole(['expert'], user),
+      },
+    },
+
     {
       name: 'lastActive',
       type: 'date',
@@ -125,46 +158,9 @@ export const Users: CollectionConfig = {
         readOnly: true,
       },
     },
-    /*   {
-      name: 'testa',
-      type: 'text',
-      required: true,
-      admin: {
-        condition: (data, siblingData, { user }) => {
-          if (user?.role === 'admin') {
-            return false
-          } else {
-            return true
-          }
-        },
-        description: 'URL-friendly identifier for the tenant',
-      },
-    }, */
   ],
   hooks: {
-    beforeValidate: [
-      async ({ data, req, operation }) => {
-        // Ensure email uniqueness within tenant
-        if (operation === 'create' && data?.email && data?.tenant) {
-          const existing = await req.payload.find({
-            collection: 'users',
-            where: {
-              email: { equals: data.email },
-            },
-          })
-          if (existing.totalDocs > 0) {
-            throw new Error('Email must be unique within tenant')
-          }
-        }
-
-        // Auto-generate name from email if not provided
-        if (operation === 'create' && data?.email && !data?.name) {
-          data.name = data.email.split('@')[0]
-        }
-
-        return data
-      },
-    ],
+    beforeValidate: [],
     beforeChange: [
       ({ data }) => {
         // Update lastActive timestamp

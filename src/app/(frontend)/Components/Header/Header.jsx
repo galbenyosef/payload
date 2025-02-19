@@ -6,6 +6,7 @@ import { FaEnvelope, FaFacebookF, FaInstagram, FaPinterestP, FaTwitter } from 'r
 import { FaAnglesRight, FaLocationDot } from 'react-icons/fa6'
 import { HiMiniMagnifyingGlass } from 'react-icons/hi2'
 import { useAuth } from '../../providers/auth'
+import { checkRole } from '@/access/roles'
 
 const Header = ({ isTopBar, variant }) => {
   const [isShowMobileMenu, setIsShowMobileMenu] = useState(false)
@@ -15,6 +16,7 @@ const Header = ({ isTopBar, variant }) => {
   const [isSticky, setIsSticky] = useState()
   const { user, logout } = useAuth()
 
+  console.log(user)
   const menu = {
     email: 'demo@example.com',
     location: '15/K, Dhaka London City, LOT',
@@ -64,6 +66,14 @@ const Header = ({ isTopBar, variant }) => {
         href: user ? '' : '',
         subItems: user
           ? [
+              ...(checkRole(['admin'], user)
+                ? [
+                    {
+                      label: 'Admin Panel',
+                      href: '/admin',
+                    },
+                  ]
+                : []),
               {
                 label: 'Logout',
                 href: '',

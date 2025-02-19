@@ -44,7 +44,6 @@ export const AuthProvider: React.FC<{ api?: 'gql' | 'rest'; children: React.Reac
 
   const login = useCallback<Login>(
     async (args) => {
-      console.log(args)
       if (api === 'rest') {
         const user = await rest(`/api/users/login`, args)
         setUser(user)

@@ -1,23 +1,20 @@
-"use client"
-import Image from 'next/image';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import {
-  FaEnvelope,
-  FaFacebookF,
-  FaInstagram,
-  FaPinterestP,
-  FaTwitter,
-} from 'react-icons/fa';
-import { FaAnglesRight, FaLocationDot } from 'react-icons/fa6';
-import { HiMiniMagnifyingGlass } from 'react-icons/hi2';
+'use client'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { FaEnvelope, FaFacebookF, FaInstagram, FaPinterestP, FaTwitter } from 'react-icons/fa'
+import { FaAnglesRight, FaLocationDot } from 'react-icons/fa6'
+import { HiMiniMagnifyingGlass } from 'react-icons/hi2'
+import { useAuth } from '../../providers/auth'
 
 const Header = ({ isTopBar, variant }) => {
-  const [isShowMobileMenu, setIsShowMobileMenu] = useState(false);
-  const [openMobileSubmenuIndex, setOpenMobileSubmenuIndex] = useState([]);
-  const [isSearchActive, setIsSearchActive] = useState(false);
-  const [prevScrollPos, setPrevScrollPos] = useState(0);
-  const [isSticky, setIsSticky] = useState();
+  const [isShowMobileMenu, setIsShowMobileMenu] = useState(false)
+  const [openMobileSubmenuIndex, setOpenMobileSubmenuIndex] = useState([])
+  const [isSearchActive, setIsSearchActive] = useState(false)
+  const [prevScrollPos, setPrevScrollPos] = useState(0)
+  const [isSticky, setIsSticky] = useState()
+  const { user, logout } = useAuth()
+
   const menu = {
     email: 'demo@example.com',
     location: '15/K, Dhaka London City, LOT',
@@ -62,39 +59,57 @@ const Header = ({ isTopBar, variant }) => {
           { label: 'Contact', href: '/contact' },
         ],
       },
-      { label: 'Contact', href: '/contact' },
+      {
+        label: user ? user.name : 'Account',
+        href: user ? '' : '',
+        subItems: user
+          ? [
+              {
+                label: 'Logout',
+                href: '',
+                onClick: () => {
+                  console.log('logging out...')
+                  logout()
+                },
+              },
+            ]
+          : [
+              { label: 'Login', href: '/login' },
+              { label: 'Register', href: '/create-account' },
+            ],
+      },
     ],
     btnUrl: '/contact',
     btnText: 'Contact Now',
-  };
+  }
 
-  const handleOpenMobileSubmenu = index => {
+  const handleOpenMobileSubmenu = (index) => {
     if (openMobileSubmenuIndex.includes(index)) {
-      setOpenMobileSubmenuIndex(prev => prev.filter(f => f !== index));
+      setOpenMobileSubmenuIndex((prev) => prev.filter((f) => f !== index))
     } else {
-      setOpenMobileSubmenuIndex(prev => [...prev, index]);
+      setOpenMobileSubmenuIndex((prev) => [...prev, index])
     }
-  };
+  }
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollPos = window.scrollY;
+      const currentScrollPos = window.scrollY
       if (currentScrollPos > prevScrollPos) {
-        setIsSticky('cs_gescout_sticky'); // Scrolling down
+        setIsSticky('cs_gescout_sticky') // Scrolling down
       } else if (currentScrollPos !== 0) {
-        setIsSticky('cs_gescout_sticky cs_gescout_show'); // Scrolling up
+        setIsSticky('cs_gescout_sticky cs_gescout_show') // Scrolling up
       } else {
-        setIsSticky();
+        setIsSticky()
       }
-      setPrevScrollPos(currentScrollPos); // Update previous scroll position
-    };
+      setPrevScrollPos(currentScrollPos) // Update previous scroll position
+    }
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll)
 
     return () => {
-      window.removeEventListener('scroll', handleScroll); // Cleanup the event listener
-    };
-  }, [prevScrollPos]);
+      window.removeEventListener('scroll', handleScroll) // Cleanup the event listener
+    }
+  }, [prevScrollPos])
   return (
     <>
       <header
@@ -155,21 +170,14 @@ const Header = ({ isTopBar, variant }) => {
             <div className="cs_main_header_in">
               <div className="cs_main_header_left">
                 <Link className="cs_site_branding" href={menu.logoLink}>
-                <Image src={menu.logoUrl} alt="img" width={205} height={53}   />
+                  <Image src={menu.logoUrl} alt="img" width={205} height={53} />
                 </Link>
               </div>
               <div className="cs_main_header_right ">
                 <div className="cs_nav cs_primary_color ">
-                  <ul
-                    className={`cs_nav_list ${isShowMobileMenu && 'cs_active'}`}
-                  >
+                  <ul className={`cs_nav_list ${isShowMobileMenu && 'cs_active'}`}>
                     {menu.navItems.map((item, index) => (
-                      <li
-                        className={
-                          item.subItems ? 'menu-item-has-children' : ''
-                        }
-                        key={index}
-                      >
+                      <li className={item.subItems ? 'menu-item-has-children' : ''} key={index}>
                         <Link
                           href={item.href}
                           onClick={() => setIsShowMobileMenu(!isShowMobileMenu)}
@@ -179,18 +187,17 @@ const Header = ({ isTopBar, variant }) => {
                         {item.subItems && (
                           <ul
                             style={{
-                              display: openMobileSubmenuIndex.includes(index)
-                                ? 'block'
-                                : 'none',
+                              display: openMobileSubmenuIndex.includes(index) ? 'block' : 'none',
                             }}
                           >
                             {item.subItems.map((subItem, subIndex) => (
                               <li key={subIndex}>
                                 <Link
                                   href={subItem.href}
-                                  onClick={() =>
+                                  onClick={() => {
+                                    subItem.onClick?.()
                                     setIsShowMobileMenu(!isShowMobileMenu)
-                                  }
+                                  }}
                                 >
                                   {subItem.label}
                                 </Link>
@@ -201,9 +208,7 @@ const Header = ({ isTopBar, variant }) => {
                         {item.subItems?.length && (
                           <span
                             className={`cs_menu_dropdown_toggle ${
-                              openMobileSubmenuIndex.includes(index)
-                                ? 'active'
-                                : ''
+                              openMobileSubmenuIndex.includes(index) ? 'active' : ''
                             }`}
                             onClick={() => handleOpenMobileSubmenu(index)}
                           >
@@ -214,9 +219,7 @@ const Header = ({ isTopBar, variant }) => {
                     ))}
                   </ul>
                   <span
-                    className={`cs_menu_toggle ${
-                      isShowMobileMenu && 'cs_toggle_active'
-                    }`}
+                    className={`cs_menu_toggle ${isShowMobileMenu && 'cs_toggle_active'}`}
                     onClick={() => setIsShowMobileMenu(!isShowMobileMenu)}
                   >
                     <span></span>
@@ -233,16 +236,10 @@ const Header = ({ isTopBar, variant }) => {
                   </div>
                   <form
                     action="#"
-                    className={`cs_header_search_form ${
-                      isSearchActive ? 'active' : ''
-                    }`}
+                    className={`cs_header_search_form ${isSearchActive ? 'active' : ''}`}
                   >
                     <div className="cs_header_search_form_in">
-                      <input
-                        type="text"
-                        placeholder="Search"
-                        className="cs_header_search_field"
-                      />
+                      <input type="text" placeholder="Search" className="cs_header_search_field" />
                       <button className="cs_header_submit_btn">
                         <i>
                           <HiMiniMagnifyingGlass />
@@ -284,7 +281,7 @@ const Header = ({ isTopBar, variant }) => {
       </header>
       {isTopBar && <div className="cs_site_header_spacing_150" />}
     </>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header

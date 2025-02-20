@@ -184,7 +184,17 @@ export interface Media {
  */
 export interface Specialty {
   id: number;
-  name: string;
+  title: string;
+  slug: string;
+  parent?: (number | null) | Specialty;
+  breadcrumbs?:
+    | {
+        doc?: (number | null) | Specialty;
+        url?: string | null;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -312,7 +322,17 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "specialties_select".
  */
 export interface SpecialtiesSelect<T extends boolean = true> {
-  name?: T;
+  title?: T;
+  slug?: T;
+  parent?: T;
+  breadcrumbs?:
+    | T
+    | {
+        doc?: T;
+        url?: T;
+        label?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

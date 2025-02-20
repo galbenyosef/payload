@@ -35,9 +35,9 @@ export default buildConfig({
   }),
   sharp,
   plugins: [
-    /*     nestedDocsPlugin({
+    nestedDocsPlugin({
       collections: ['specialties'],
-    }), */
+    }),
   ],
   onInit: async (payload: Payload) => {
     try {

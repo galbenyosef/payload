@@ -4,14 +4,20 @@ export const Specialties: CollectionConfig = {
   slug: 'specialties',
   auth: false,
   admin: {
-    useAsTitle: 'name',
+    useAsTitle: 'title',
   },
   access: {
     read: () => true,
   },
   fields: [
     {
-      name: 'name',
+      name: 'title',
+      type: 'text',
+      required: true,
+      unique: true,
+    },
+    {
+      name: 'slug',
       type: 'text',
       required: true,
       unique: true,

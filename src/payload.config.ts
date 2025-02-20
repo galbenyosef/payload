@@ -39,6 +39,7 @@ export default buildConfig({
       collections: ['specialties'],
     }),
   ],
+
   onInit: async (payload: Payload) => {
     try {
       const hasAdmins = await payload.find({
@@ -46,7 +47,7 @@ export default buildConfig({
         limit: 1,
       })
 
-      if (true /* hasAdmins.docs.length === 0 */) {
+      if (hasAdmins.docs.length === 0) {
         console.log('Starting initialization process...')
 
         console.log('Creating users...')
